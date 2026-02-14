@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尼崎市産後ケア事業費用シミュレーター（大阪院）</title>
+    <style>
+        :root { --main-color: #00796b; --bg-color: #e0f2f1; }
+        body { font-family: sans-serif; background-color: var(--bg-color); color: #333; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; max-width: 480px; width: 100%; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.2rem; color: var(--main-color); text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--bg-color); padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
+        select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .result-box { margin-top: 25px; padding: 20px; background: #fff; border: 2px solid var(--main-color); border-radius: 10px; text-align: center; }
+        .total-amount { font-size: 2.2rem; font-weight: bold; color: var(--main-color); margin: 5px 0; }
+        .breakdown { font-size: 0.85rem; color: #666; text-align: left; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>尼崎市産後ケア事業<br>費用シミュレーター (大阪院)</h1>
+
+    <label>世帯区分</label>
+    <select id="div" onchange="calc()">
+        <option value="tax">市民税課税世帯</option>
+        <option value="none">非課税・生活保護世帯</option>
+    </select>
+
+    <label>宿泊数 (通算7日まで)</label>
+    <select id="nights" onchange="calc()">
+        <option value="1">1泊2日</option>
+        <option value="2">2泊3日</option>
+        <option value="3">3泊4日</option>
+        <option value="4">4泊5日</option>
+        <option value="5">5泊6日</option>
+        <option value="6">6泊7日</option>
+    </select>
+
+    <div class="result-box">
+        <div style="font-size: 0.9rem;">お支払い概算合計</div>
+        <div class="total-amount" id="total">0 円</div>
+        <div class="breakdown" id="details"></div>
+    </div>
+</div>
+
+<script>
+function calc() {
+    const div = document.getElementById('div').value;
+    const nights = parseInt(document.getElementById('nights').value);
+    const days = nights + 1; // 1泊2日の場合は「2日分」の利用料
+
+    // 1. 尼崎市利用料 (宿泊型)
+    // 課税：2,750円/日、非課税：1,000円/回(1泊2日なら2,000円)
+    let ama_fee = 0;
+    if (div === "tax") {
+        ama_fee = 2750 * days;
+    } else {
+        ama_fee = 1000 * days;
+    }
+
+    // 2. 大阪院追加料金 (宿泊数に応じた固定額)
+    const add_fees = {
+        1: 1000,
+        2: 33000,
+        3: 65000,
+        4: 97000,
+        5: 129000,
+        6: 161000
+    };
+    const hospital_add = add_fees[nights] || 0;
+
+    const total = ama_fee + hospital_add;
+
+    document.getElementById('total').innerText = total.toLocaleString() + " 円";
+    document.getElementById('details').innerHTML = `
+        内訳：<br>
+        ・尼崎市利用料（${days}日分）：${ama_fee.toLocaleString()}円<br>
+        ・大阪院追加料金（${nights}泊）：${hospital_add.toLocaleString()}円<br>
+        <small style="color:#ee6002;">※通算7日を超えた場合は全額自費となります</small>
+    `;
+}
+calc();
+</script>
+
+</body>
+</html>
