@@ -20,7 +20,7 @@
         .breakdown { font-size: 0.8rem; color: #666; line-height: 1.6; text-align: left; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
         .calendar-note { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; font-size: 0.75rem; color: #666; line-height: 1.5; }
         .calendar-note h2 { font-size: 0.85rem; margin: 0 0 10px 0; color: #333; border-left: 3px solid var(--main-color); padding-left: 8px; }
-        .update-info { background: #fffbe6; border: 1px solid #ffe58f; padding: 8px; border-radius: 5px; font-size: 0.75rem; margin-bottom: 15px; color: #856404; text-align: center; }
+        .update-info { background: #fffbe6; border: 1px solid #ffe58f; padding: 8px; border-radius: 5px; font-size: 0.75rem; margin-bottom: 15px; color: #856404; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -28,13 +28,13 @@
 <div class="container">
     <h1>京都市スマイルママ・ホッと事業<br>費用シミュレーター</h1>
     
-    <div class="update-info">【2026年4月1日 改定料金対応版】</div>
+    <div class="update-info">【令和8年4月改定 料金対応済】</div>
 
     <div class="input-group">
         <label>世帯区分</label>
         <select id="div" onchange="calc()">
-            <option value="AB" selected>区分A・B (課税世帯)</option>
-            <option value="C">区分C1・C2 (非課税・生活保護世帯)</option>
+            <option value="AB" selected>課税世帯 (旧A・B階層)</option>
+            <option value="C">非課税・生活保護世帯 (C1・C2階層)</option>
         </select>
     </div>
 
@@ -56,11 +56,11 @@
         </label>
         <label class="checkbox-group">
             <input type="checkbox" id="is_holiday" onchange="calc()">
-            滞在期間中に「祝日」が含まれる
+            滞在期間中に「祝日」が含まれる (+5,000円/日)
         </label>
         <label class="checkbox-group">
             <input type="checkbox" id="is_holiday_prev" onchange="calc()">
-            滞在期間中に「祝前日」が含まれる
+            滞在期間中に「祝前日」が含まれる (+5,000円/日)
         </label>
     </div>
 
@@ -75,7 +75,7 @@
         <h2>2026年 祝日・祝前日のご案内</h2>
         <strong>【祝日】</strong> 1/1, 1/12, 2/11, 2/23, 3/20, 4/29, 5/3, 5/4, 5/5, 5/6, 7/20, 8/11, 9/21, 9/22, 9/23, 10/12, 11/3, 11/23<br>
         <strong>【祝前日】</strong> 1/11, 2/10, 2/22, 3/19, 4/28, 5/2, 5/3, 5/4, 5/5, 7/19, 8/10, 9/20, 9/21, 9/22, 10/11, 11/2, 11/22<br>
-        <p style="margin-top:8px; font-size:0.7rem;">※金・土・日の宿泊については、チェックボックスを入れなくても自動で加算されます。</p>
+        <p style="margin-top:8px; font-size:0.7rem;">※金・土・日の宿泊については、チェックボックスを入れなくても1泊につき5,000円が自動加算されます。</p>
     </div>
 </div>
 
@@ -92,7 +92,7 @@ function calc() {
 
     if (isNaN(checkin) || isNaN(checkout) || checkout <= checkin) {
         document.getElementById('total').innerText = "0 円";
-        document.getElementById('days_display').innerText = "正しい日付を入力してください";
+        document.getElementById('days_display').innerText = "日付を入力してください";
         document.getElementById('details').innerHTML = "";
         return;
     }
@@ -103,17 +103,19 @@ function calc() {
         return;
     }
 
-    // 1. 京都市利用料（2026/4 改定）
-    // A・B統合：5日まで2,400円、6日目以降4,900円
-    // C：490円（7日まで無料のルールを継続と仮定）
+    // 1. 京都市利用料（令和8年4月改定）
+    // 課税世帯(AB)：一律 2,400円/日（減免適用後）※5日間まで
+    // 非課税世帯(C)：一律 490円/日 ※7日間まで無料
     let city_fee = 0;
     if (div === "AB") {
+        // 5日目まで2400円、6日目以降は減免なしの4900円
         city_fee = (nights <= 5) ? 2400 * nights : (2400 * 5) + (4900 * (nights - 5));
     } else {
+        // C1, C2は7日まで無料
         city_fee = (nights <= 7) ? 0 : 490 * (nights - 7);
     }
 
-    // 2. 施設基本料 (ぶどうの木 京都院)
+    // 2. 施設基本料 (ぶどうの木 京都院設定)
     let hotel_base = 10000 + (25000 * (nights - 1));
 
     // 3. 曜日・祝日加算
