@@ -20,20 +20,21 @@
         .breakdown { font-size: 0.8rem; color: #666; line-height: 1.6; text-align: left; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
         .calendar-note { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; font-size: 0.75rem; color: #666; line-height: 1.5; }
         .calendar-note h2 { font-size: 0.85rem; margin: 0 0 10px 0; color: #333; border-left: 3px solid var(--main-color); padding-left: 8px; }
+        .update-info { background: #fffbe6; border: 1px solid #ffe58f; padding: 8px; border-radius: 5px; font-size: 0.75rem; margin-bottom: 15px; color: #856404; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>京都市スマイルママ・ホッと事業<br>費用シミュレーター</h1>
+    
+    <div class="update-info">【2026年4月1日 改定料金対応版】</div>
 
     <div class="input-group">
         <label>世帯区分</label>
         <select id="div" onchange="calc()">
-            <option value="A">区分A (所得730万〜)</option>
-            <option value="B" selected>区分B (課税世帯)</option>
-            <option value="C1">区分C1 (非課税世帯)</option>
-            <option value="C2">区分C2 (生活保護世帯)</option>
+            <option value="AB" selected>区分A・B (課税世帯)</option>
+            <option value="C">区分C1・C2 (非課税・生活保護世帯)</option>
         </select>
     </div>
 
@@ -102,24 +103,29 @@ function calc() {
         return;
     }
 
-    // 1. 京都市利用料
-    let city_fee = (div === "A") ? (nights <= 5 ? 9820 * nights : 49100 + 12320 * (nights - 5)) :
-                   (div === "B") ? (nights <= 5 ? 2430 * nights : 12150 + 4930 * (nights - 5)) : 0;
+    // 1. 京都市利用料（2026/4 改定）
+    // A・B統合：5日まで2,400円、6日目以降4,900円
+    // C：490円（7日まで無料のルールを継続と仮定）
+    let city_fee = 0;
+    if (div === "AB") {
+        city_fee = (nights <= 5) ? 2400 * nights : (2400 * 5) + (4900 * (nights - 5));
+    } else {
+        city_fee = (nights <= 7) ? 0 : 490 * (nights - 7);
+    }
 
-    // 2. 施設基本料
+    // 2. 施設基本料 (ぶどうの木 京都院)
     let hotel_base = 10000 + (25000 * (nights - 1));
 
     // 3. 曜日・祝日加算
     let weekend_add = 0;
     let currentDate = new Date(checkin);
     for (let i = 0; i < nights; i++) {
-        let day = currentDate.getDay(); // 0:日, 5:金, 6:土
+        let day = currentDate.getDay(); 
         if (day === 0 || day === 5 || day === 6) {
             weekend_add += 5000;
         }
         currentDate.setDate(currentDate.getDate() + 1);
     }
-    // チェックボックス分を加算
     if (isHoliday) weekend_add += 5000;
     if (isHolidayPrev) weekend_add += 5000;
 
