@@ -18,12 +18,15 @@
         .total-amount { font-size: 2.2rem; font-weight: bold; color: var(--main-color); margin: 5px 0; }
         .breakdown { font-size: 0.8rem; color: #666; text-align: left; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; line-height: 1.6; }
         .note-red { color: #d32f2f; font-size: 0.75rem; margin-top: 10px; font-weight: bold; }
+        .update-info { background: #e6f7ff; border: 1px solid #91d5ff; padding: 8px; border-radius: 5px; font-size: 0.75rem; margin-bottom: 15px; color: #0050b3; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>尼崎市産後ケア事業<br>費用シミュレーター (大阪院)</h1>
+    
+    <div class="update-info">【2026年6月1日 施設利用料改定対応版】</div>
 
     <label>世帯区分</label>
     <select id="div" onchange="calc()">
@@ -81,14 +84,13 @@ function calc() {
     // 1. 尼崎市利用料
     let ama_fee = (div === "tax") ? 2750 * days : 1000 * days;
 
-    // 2. 大阪院追加料金 (基本)
-    const base_adds = { 1:1000, 2:33000, 3:65000, 4:97000, 5:129000, 6:161000 };
+    // 2. 大阪院追加料金 (基本料金改定：1泊につき5,000円を加算済)
+    const base_adds = { 1:6000, 2:43000, 3:80000, 4:117000, 5:154000, 6:191000 };
     const hospital_base = base_adds[nights] || 0;
 
     // 3. 年末年始特別料金
     let newyear_fee = 0;
     if (isNewYear) {
-        // 3泊以内なら1泊2万、4泊以上なら1泊1万
         const rate = (nights <= 3) ? 20000 : 10000;
         newyear_fee = rate * nights;
     }
