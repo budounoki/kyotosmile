@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>京都市スマイルママ・ホッと事業 費用シミュレーター</title>
+
+<style>
+:root {
+    --main-color: #713451;
+    --bg-color: #fbf7fa;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg-color);
+    color: #333;
+    font-family: "Helvetica Neue", Arial, "Hiragino Sans", sans-serif;
+}
+.container {
+    width: 100%;
+    max-width: 480px;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.care-hero {
+    margin: 0 0 24px;
+}
+.care-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+.care-hero .action {
+    margin-top: 14px;
+}
+.care-hero-note {
+    margin: 8px 0 0;
+    color: #666;
+    font-size: .75rem;
+    text-align: center;
+}
+#fee-calculator {
+    scroll-margin-top: 16px;
+}
+h1 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--bg-color);
+    color: var(--main-color);
+    font-size: 1.2rem;
+    line-height: 1.5;
+    text-align: center;
+}
+.input-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-top: 10px;
+    color: #555;
+    font-size: .85rem;
+    font-weight: bold;
+    line-height: 1.6;
+}
+select,
+input[type="date"] {
+    width: 100%;
+    min-width: 0;
+    margin-top: 5px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font: inherit;
+    font-size: 1rem;
+}
+.help-note {
+    margin: 8px 0 14px;
+    color: #555;
+    font-size: .78rem;
+    line-height: 1.7;
+}
+.history-area {
+    min-width: 0;
+    margin: 18px 0;
+    padding: 14px;
+    border: 1px solid #ded0db;
+    border-radius: 9px;
+}
+.history-area legend {
+    color: var(--main-color);
+    font-size: .9rem;
+    font-weight: bold;
+}
+.date-row {
+    display: flex;
+    gap: 10px;
+}
+.date-cell {
+    flex: 1;
+    min-width: 0;
+}
+.checkbox-area {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fdf0f4;
+    border-radius: 8px;
+}
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: .9rem;
+    cursor: pointer;
+}
+.checkbox-group input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
+.result-box {
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid var(--main-color);
+    border-radius: 10px;
+    background: #fff;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.result-label {
+    color: #666;
+    font-size: .9rem;
+}
+.total-amount {
+    margin: 5px 0;
+    color: var(--main-color);
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+#days_display {
+    color: var(--main-color);
+    font-size: .9rem;
+    font-weight: bold;
+    line-height: 1.6;
+}
+.breakdown {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-size: .8rem;
+    line-height: 1.8;
+    text-align: left;
+}
+.update-info {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ffe58f;
+    border-radius: 5px;
+    background: #fffbe6;
+    color: #856404;
+    font-size: .75rem;
+    font-weight: bold;
+    line-height: 1.6;
+    text-align: center;
+}
+.next-step {
+    margin-top: 20px;
+    padding: 20px 16px;
+    background: #faf5f9;
+    border-radius: 12px;
+}
+.next-step h2 {
+    margin: 0 0 10px;
+    color: var(--main-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+.next-step p {
+    font-size: .9rem;
+    line-height: 1.7;
+}
+.action {
+    display: block;
+    width: 100%;
+    padding: 15px 12px;
+    border: 0;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1.6;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+.action-primary {
+    background: var(--main-color);
+    color: #fff;
+}
+.action-line {
+    background: #087c3d;
+    color: #fff;
+}
+.action-copy {
+    border: 1px solid var(--main-color);
+    background: #fff;
+    color: var(--main-color);
+    font-size: .9rem;
+}
+.action:hover {
+    filter: brightness(.95);
+}
+.action:disabled {
+    opacity: .6;
+    cursor: default;
+}
+.action:focus-visible,
+.detail-link:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+.consult-label {
+    margin: 20px 0 8px;
+}
+.next-step .small-note {
+    color: #555;
+    font-size: .78rem;
+    line-height: 1.7;
+}
+.detail-link {
+    color: var(--main-color);
+    text-underline-offset: 3px;
+}
+#copy-status {
+    min-height: 1.6em;
+    margin: 6px 0;
+    font-size: .8rem;
+}
+#consultation-text {
+    width: 100%;
+    min-height: 160px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    font: inherit;
+    font-size: .85rem;
+}
+.steps {
+    padding-left: 1.4em;
+    font-size: .85rem;
+    line-height: 1.8;
+}
+.calendar-note {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    color: #666;
+    font-size: .75rem;
+    line-height: 1.7;
+}
+.calendar-note h2 {
+    margin: 0 0 10px;
+    padding-left: 8px;
+    border-left: 3px solid var(--main-color);
+    color: #333;
+    font-size: .85rem;
+}
+[hidden] {
+    display: none !important;
+}
+@media (max-width: 400px) {
+    body {
+        padding: 12px;
+    }
+    .container {
+        padding: 18px 14px;
+    }
+    .action {
+        font-size: .92rem;
+    }
+}
+</style>
+</head>
+
+<body>
+<main class="container">
+
+    <section class="care-hero" aria-label="ぶどうの木 京都院のご案内">
+        <img
+            src="ぶどうの木 京都産後ケアホテル_0.png"
+            width="1086"
+            height="1448"
+            fetchpriority="high"
+            alt="京都市民のママへ。産後ケアホテル、制度を使えばいくら？30秒でわかる費用シミュレーター。"
+        >
+        <p class="care-hero-note">画像はイメージです</p>
+
+        <a class="action action-primary" href="#fee-calculator">
+            料金を計算する ↓
+        </a>
+    </section>
+
+    <h1 id="fee-calculator" tabindex="-1">
+        京都市スマイルママ・ホッと事業<br>
+        費用シミュレーター
+    </h1>
+
+    <div class="update-info">
+        京都市の公開情報に基づく概算｜2026年10月19日確認
+    </div>
+
+    <div class="input-group">
+        <label for="div">世帯の所得状況（ショートステイ）</label>
+        <select id="div" onchange="calc()">
+            <option value="A" selected>A：課税世帯・所得730万円以上</option>
+            <option value="B">B：課税世帯・所得730万円未満</option>
+            <option value="C">C：非課税世帯・生活保護世帯</option>
+        </select>
+    </div>
+
+    <p class="help-note">
+        所得は利用者と夫の合計です（年収とは異なります）。
+        原則は前年、1〜5月の申請は前々年の所得で判定します。
+        区分は市の決定通知でご確認ください。
+    </p>
+
+    <fieldset class="history-area">
+        <legend>これまでの利用状況</legend>
+
+        <label for="used_stays">
+            このお子さまの産後ショートステイ利用済み回数
+        </label>
+        <select id="used_stays" onchange="calc()">
+            <option value="0">0回（初めて）</option>
+            <option value="1">1回</option>
+            <option value="2">2回</option>
+            <option value="3">3回</option>
+            <option value="4">4回</option>
+            <option value="5">5回</option>
+            <option value="6">6回</option>
+            <option value="7">7回</option>
+        </select>
+
+        <p class="help-note">
+            他の施設での利用も含めます。
+            原則1泊を1回として、通算7回まで利用できます。
+        </p>
+
+        <div id="discount-history">
+            <label for="used_discounts">
+                これまでに利用料の減免を使った回数
+            </label>
+            <select id="used_discounts" onchange="calc()">
+                <option value="0">0回（未使用）</option>
+                <option value="1">1回</option>
+                <option value="2">2回</option>
+                <option value="3">3回</option>
+                <option value="4">4回</option>
+                <option value="5">5回</option>
+            </select>
+
+            <p class="help-note">
+                宿泊・日帰り・訪問型を合わせて5回までです。
+                他の施設での利用も含めて選んでください。
+            </p>
+        </div>
+
+        <p class="help-note">
+            回数が分からない場合は、決定通知等をご確認いただくか、
+            LINEでご相談ください。
+        </p>
+    </fieldset>
+
+    <div class="date-row">
+        <div class="date-cell">
+            <label for="checkin">チェックイン</label>
+            <input
+                type="date"
+                id="checkin"
+                min="2026-04-01"
+                max="2027-12-31"
+                onchange="calc()"
+            >
+        </div>
+
+        <div class="date-cell">
+            <label for="checkout">チェックアウト</label>
+            <input
+                type="date"
+                id="checkout"
+                min="2026-04-02"
+                max="2028-01-01"
+                onchange="calc()"
+            >
+        </div>
+    </div>
+
+    <div class="checkbox-area">
+        <label class="checkbox-group">
+            <input type="checkbox" id="multi" onchange="calc()">
+            多胎児（双子など）で利用（＋2,000円／日）
+        </label>
+
+        <p class="help-note">
+            金・土・日・祝日・祝前日の加算は、
+            宿泊日から自動で判定します。
+        </p>
+    </div>
+
+    <section class="result-box" aria-live="polite" aria-atomic="true">
+        <div class="result-label">お支払い概算合計</div>
+        <div class="total-amount" id="total">—</div>
+        <div id="days_display">日付を入力してください</div>
+        <div class="breakdown" id="details"></div>
+    </section>
+
+    <section class="next-step" aria-labelledby="next-heading">
+        <h2 id="next-heading">料金の次は、空室確認・ご相談へ</h2>
+
+        <p id="next-intro">
+            日程を入力すると、概算料金を確認できます。
+            ご利用条件のご相談はLINEでも受け付けています。
+        </p>
+
+        <div id="copy-area" hidden>
+            <button
+                type="button"
+                class="action action-copy"
+                id="copy-button"
+                onclick="copyConsultation()"
+            >
+                日程・概算料金をコピーする
+            </button>
+
+            <p class="small-note">
+                コピーした内容を、予約フォームの備考欄（ある場合）や
+                LINEのトークに貼り付けてご相談ください。
+                日程は自動では引き継がれません。
+            </p>
+
+            <p id="copy-status" role="status" aria-live="polite"></p>
+
+            <textarea
+                id="consultation-text"
+                aria-label="コピー用の相談内容"
+                readonly
+                hidden
+            ></textarea>
+        </div>
+
+        <a
+            class="action action-primary"
+            id="reservation-link"
+            href="https://reservation.ppch-j.com/reserve"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            空室確認・予約相談へ進む
+        </a>
+
+        <p class="consult-label">
+            利用条件や申請方法について相談したい方へ
+        </p>
+
+        <a
+            class="action action-line"
+            href="https://line.me/R/ti/p/%40150jmmqs"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            LINEで相談する
+        </a>
+
+        <p class="small-note">
+            LINE公式アカウント：@150jmmqs<br>
+            友だち追加後、トークからご相談内容をお送りください。
+        </p>
+
+        <p class="small-note">
+            ※表示金額は概算です。
+            空室状況・ご利用条件・料金を確認後、ご案内いたします。
+            シミュレーションやリンクのクリックだけでは、
+            予約・市への申請は完了しません。
+        </p>
+
+        <p>
+            <a
+                class="detail-link"
+                href="https://gamma.app/docs/-g2qgo4e05d5g1io"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                利用条件・料金の内訳・申請の流れを見る
+            </a>
+        </p>
+
+        <ol class="steps">
+            <li>施設へ連絡し、空室確認・日程調整</li>
+            <li>京都市へ利用申請</li>
+            <li>市からの決定通知を確認してご利用</li>
+        </ol>
+    </section>
+
+    <section class="calendar-note">
+        <h2>料金・制度について</h2>
+
+        <p>
+            市の制度による利用者負担額に、
+            ぶどうの木 京都院の施設料金を加えた概算です。
+            非課税・生活保護世帯も、施設料金等は別途かかります。
+        </p>
+
+        <p>
+            施設料金：1泊目10,000円、2泊目以降25,000円／泊。
+            金・土・日・祝日・祝前日は5,000円を加算します。
+            多胎児の加算は2,000円／日として、泊数分で試算します。
+        </p>
+
+        <p>
+            曜日等の加算は宿泊する日を基準に、
+            同じ日が複数条件に該当しても1泊あたり5,000円として
+            試算しています。実際の適用は施設にご確認ください。
+        </p>
+
+        <p>
+            生後1年未満のお子さまとお母さまが対象です。
+            京都市に住民票があり、市内に居住していることなどの条件があります。
+            妊娠中は市への申請はできません。
+        </p>
+
+        <p>
+            部屋のグレードアップ等のオプションは含みません。
+            市の利用料が未決定の場合、一時的に減免前のA区分料金での
+            支払いが必要になる場合があります。
+        </p>
+
+        <p>
+            計算対象：2026年4月1日〜2027年12月31日の宿泊
+            （チェックアウトは2028年1月1日まで）。
+            祝日は振替休日・国民の休日を含みます。
+        </p>
+
+        <p>
+            <a
+                class="detail-link"
+                href="https://www.city.kyoto.lg.jp/hagukumi/page/0000168986.html#fee"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                京都市の利用料・利用条件
+            </a>
+            <br>
+            <a
+                class="detail-link"
+                href="https://www.city.kyoto.lg.jp/hagukumi/cmsfiles/contents/0000168/168986/smile0809.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                京都市の施設別料金一覧（PDF・ぶどうの木は9ページ）
+            </a>
+            <br>
+            <a
+                class="detail-link"
+                href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                祝日カレンダーの出典：内閣府
+            </a>
+        </p>
+    </section>
+
+</main>
+
+<script>
+document.getElementById("checkin").value =
+    new Intl.DateTimeFormat("sv-SE", {
+        timeZone: "Asia/Tokyo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
+
+let consultationText = "";
+let calculationVersion = 0;
+
+const HOLIDAYS = new Set([
+    "2026-01-01", "2026-01-12", "2026-02-11",
+    "2026-02-23", "2026-03-20", "2026-04-29",
+    "2026-05-03", "2026-05-04", "2026-05-05",
+    "2026-05-06", "2026-07-20", "2026-08-11",
+    "2026-09-21", "2026-09-22", "2026-09-23",
+    "2026-10-12", "2026-11-03", "2026-11-23",
+
+    "2027-01-01", "2027-01-11", "2027-02-11",
+    "2027-02-23", "2027-03-21", "2027-03-22",
+    "2027-04-29", "2027-05-03", "2027-05-04",
+    "2027-05-05", "2027-07-19", "2027-08-11",
+    "2027-09-20", "2027-09-23", "2027-10-11",
+    "2027-11-03", "2027-11-23",
+
+    // 2027年12月31日の祝前日判定に使用
+    "2028-01-01"
+]);
+
+const DAY = 86400000;
+
+function parseDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return NaN;
+    }
+
+    const date = new Date(value + "T00:00:00Z");
+
+    if (
+        Number.isNaN(date.getTime()) ||
+        date.toISOString().slice(0, 10) !== value
+    ) {
+        return NaN;
+    }
+
+    return date.getTime();
+}
+
+function dateKey(time) {
+    return new Date(time).toISOString().slice(0, 10);
+}
+
+function yen(amount) {
+    return amount.toLocaleString("ja-JP") + "円";
+}
+
+function calc() {
+    calculationVersion++;
+    consultationText = "";
+
+    document.getElementById("copy-area").hidden = true;
+    document.getElementById("consultation-text").hidden = true;
+    document.getElementById("consultation-text").value = "";
+    document.getElementById("copy-status").textContent = "";
+    document.getElementById("copy-button").disabled = false;
+
+    document.getElementById("reservation-link").textContent =
+        "空室確認・予約相談へ進む";
+
+    document.getElementById("next-intro").textContent =
+        "日程を入力すると、概算料金を確認できます。" +
+        "ご利用条件のご相談はLINEでも受け付けています。";
+
+    document.getElementById("total").innerText = "—";
+    document.getElementById("details").innerHTML = "";
+
+    const message = document.getElementById("days_display");
+    const div = document.getElementById("div").value;
+
+    document.getElementById("discount-history").hidden =
+        div === "C";
+
+    document.getElementById("used_discounts").disabled =
+        div === "C";
+
+    const usedStays = Number(
+        document.getElementById("used_stays").value
+    );
+
+    const usedDiscounts = Number(
+        document.getElementById("used_discounts").value
+    );
+
+    if (
+        !["A", "B", "C"].includes(div) ||
+        !Number.isInteger(usedStays) ||
+        usedStays < 0 ||
+        usedStays > 7 ||
+        !Number.isInteger(usedDiscounts) ||
+        usedDiscounts < 0 ||
+        usedDiscounts > 5
+    ) {
+        message.innerText = "これまでの利用回数をご確認ください";
+        return;
+    }
+
+    const remainingStays = 7 - usedStays;
+
+    if (remainingStays === 0) {
+        message.innerText =
+            "産後ショートステイの利用上限7回に達しています。" +
+            "ご利用については施設にご相談ください。";
+        return;
+    }
+
+    const start = document.getElementById("checkin").value;
+    const end = document.getElementById("checkout").value;
+
+    const checkin = parseDate(start);
+    const checkout = parseDate(end);
+
+    if (
+        !Number.isFinite(checkin) ||
+        !Number.isFinite(checkout)
+    ) {
+        message.innerText =
+            "チェックイン・チェックアウト日を入力してください";
+        return;
+    }
+
+    if (checkout <= checkin) {
+        message.innerText =
+            "チェックアウト日はチェックイン日より後にしてください";
+        return;
+    }
+
+    if (
+        start < "2026-04-01" ||
+        end > "2028-01-01"
+    ) {
+        message.innerText =
+            "計算対象は2026年4月1日〜2027年12月31日の宿泊です。" +
+            "対象外の日程は施設にご相談ください。";
+        return;
+    }
+
+    const nights = (checkout - checkin) / DAY;
+
+    if (nights > remainingStays) {
+        message.innerText =
+            "産後ショートステイは通算7回までです。" +
+            "今回利用できるのは最大" + remainingStays + "泊です。";
+        return;
+    }
+
+    const discountedNights =
+        div === "C"
+            ? 0
+            : Math.min(nights, 5 - usedDiscounts);
+
+    const normalNights = nights - discountedNights;
+    const discountedRate = div === "A" ? 3600 : 2400;
+
+    const cityFee =
+        div === "C"
+            ? 0
+            : discountedNights * discountedRate +
+              normalNights * 4900;
+
+    const hotelBase = 10000 + 25000 * (nights - 1);
+
+    // 同じ日に条件が重なっても1泊5,000円として試算
+    const surchargeDates = [];
+
+    for (
+        let time = checkin;
+        time < checkout;
+        time += DAY
+    ) {
+        const weekday = new Date(time).getUTCDay();
+        const isWeekend = [0, 5, 6].includes(weekday);
+        const isHoliday = HOLIDAYS.has(dateKey(time));
+        const isHolidayEve = HOLIDAYS.has(dateKey(time + DAY));
+
+        if (isWeekend || isHoliday || isHolidayEve) {
+            surchargeDates.push(dateKey(time));
+        }
+    }
+
+    const surcharge = surchargeDates.length * 5000;
+
+    const isMulti =
+        document.getElementById("multi").checked;
+
+    const multiFee = isMulti ? 2000 * nights : 0;
+
+    const total =
+        cityFee + hotelBase + surcharge + multiFee;
+
+    const cityBreakdown =
+        div === "C"
+            ? "市制度の利用料は全回減免（施設料金等は別途）"
+            : "減免あり：" +
+              yen(discountedRate) +
+              " × " +
+              discountedNights +
+              "回／減免なし：4,900円 × " +
+              normalNights +
+              "回";
+
+    document.getElementById("total").innerText =
+        total.toLocaleString("ja-JP") + " 円";
+
+    message.innerText =
+        nights + "泊" + (nights + 1) + "日 利用";
+
+    document.getElementById("details").innerHTML = `
+        ・市制度の利用者負担額：${yen(cityFee)}<br>
+        <small>${cityBreakdown}</small><br>
+
+        ・施設料金：${yen(hotelBase)}<br>
+        <small>
+            1泊目10,000円＋2泊目以降25,000円 × ${nights - 1}泊
+        </small><br>
+
+        ・曜日・祝日・祝前日加算：
+        ${yen(surcharge)}（${surchargeDates.length}泊分）<br>
+
+        ${
+            surchargeDates.length
+                ? "<small>対象の宿泊日：" +
+                  surchargeDates.join("、") +
+                  "</small><br>"
+                : ""
+        }
+
+        ${
+            isMulti
+                ? "・多胎児加算：" + yen(multiFee) + "<br>"
+                : ""
+        }
+
+        <small>
+            入力した利用履歴に基づく概算です。
+            最終料金は市の決定通知・施設の案内でご確認ください。
+        </small>
+    `;
+
+    consultationText = [
+        "京都市スマイルママ・ホッと事業での利用を相談したいです。",
+        "施設：ぶどうの木 京都院",
+        "チェックイン：" + start,
+        "チェックアウト：" + end,
+        "宿泊日数：" + nights + "泊" + (nights + 1) + "日",
+        "お支払い概算合計：" + yen(total),
+        "施設料金：" + yen(hotelBase),
+        "曜日・祝日・祝前日加算：" + yen(surcharge),
+        "多胎児での利用：" + (isMulti ? "あり" : "なし"),
+        "産後ショートステイ利用済み回数：" + usedStays + "回",
+        "※シミュレーターの概算です。" +
+        "空室状況・利用条件・料金をご確認ください。"
+    ].join("\n");
+
+    document.getElementById("copy-area").hidden = false;
+
+    document.getElementById("next-intro").textContent =
+        "ご希望の日程で、空室を確認してみませんか？" +
+        "日程・概算料金をコピーしておくと、ご相談がスムーズです。";
+
+    document.getElementById("reservation-link").textContent =
+        "この日程で空室確認・予約相談";
+}
+
+async function copyConsultation() {
+    if (!consultationText) return;
+
+    const text = consultationText;
+    const version = calculationVersion;
+
+    const button =
+        document.getElementById("copy-button");
+
+    const status =
+        document.getElementById("copy-status");
+
+    const fallback =
+        document.getElementById("consultation-text");
+
+    button.disabled = true;
+
+    try {
+        if (
+            !navigator.clipboard ||
+            !window.isSecureContext
+        ) {
+            throw new Error("Clipboard unavailable");
+        }
+
+        await navigator.clipboard.writeText(text);
+
+        if (version === calculationVersion) {
+            status.textContent =
+                "コピーしました。" +
+                "予約フォームやLINEに貼り付けてください。";
+        }
+    } catch {
+        if (version === calculationVersion) {
+            fallback.value = text;
+            fallback.hidden = false;
+            fallback.focus();
+            fallback.select();
+
+            status.textContent =
+                "自動コピーできませんでした。" +
+                "下の文章を長押し、または選択してコピーしてください。";
+        }
+    } finally {
+        if (version === calculationVersion) {
+            button.disabled = false;
+        }
+    }
+}
+
+calc();
+</script>
+</body>
+</html>

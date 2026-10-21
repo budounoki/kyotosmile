@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>尼崎市産後ケア事業 費用シミュレーター｜ぶどうの木 大阪院</title>
+<style>
+:root {
+    --main: #00796b;
+    --bg: #edf7f5;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg);
+    color: #333;
+    font-family: "Helvetica Neue", Arial, "Hiragino Sans", sans-serif;
+    line-height: 1.7;
+}
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px #00000012;
+}
+h1 {
+    margin: 0 0 18px;
+    color: var(--main);
+    font-size: 1.2rem;
+    text-align: center;
+}
+h2 {
+    color: var(--main);
+    font-size: 1.05rem;
+}
+.update {
+    padding: 10px;
+    background: #edf6ff;
+    border-radius: 6px;
+    font-size: .76rem;
+    text-align: center;
+}
+label {
+    display: block;
+    margin-top: 18px;
+    font-size: .9rem;
+    font-weight: bold;
+}
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    color: #333;
+    font: inherit;
+}
+.help {
+    margin: 8px 0;
+    color: #555;
+    font-size: .8rem;
+}
+.choices {
+    padding: 12px;
+    margin-top: 18px;
+    border-radius: 8px;
+    background: #f0f7f6;
+}
+.check {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 8px 0;
+    font-size: .9rem;
+}
+.check input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+}
+.result {
+    margin-top: 22px;
+    padding: 20px;
+    border: 2px solid var(--main);
+    border-radius: 10px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.result-label {
+    font-size: .9rem;
+}
+.amount {
+    color: var(--main);
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+#result-message {
+    font-size: .86rem;
+    color: var(--main);
+}
+#details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+    font-size: .82rem;
+    text-align: left;
+}
+.excluded {
+    color: #805000;
+    font-size: .8rem;
+}
+.next {
+    margin-top: 22px;
+    padding: 18px;
+    border-radius: 10px;
+    background: #f0f7f6;
+}
+.next h2 {
+    margin-top: 0;
+}
+.action {
+    display: block;
+    width: 100%;
+    padding: 14px 10px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: var(--main);
+    font: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+.copy {
+    border: 1px solid var(--main);
+    color: var(--main);
+    background: #fff;
+    font-size: .9rem;
+}
+.line {
+    background: #087c3d;
+}
+.action:focus-visible,
+a:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+.action:disabled {
+    opacity: .6;
+    cursor: default;
+}
+.consult-label {
+    margin: 22px 0 8px;
+    font-size: .9rem;
+}
+a {
+    color: var(--main);
+    text-underline-offset: 3px;
+}
+#copy-status {
+    min-height: 1.5em;
+    font-size: .8rem;
+}
+#copy-text {
+    width: 100%;
+    min-height: 170px;
+    padding: 10px;
+    font: inherit;
+    font-size: .85rem;
+}
+.notes {
+    margin-top: 22px;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    font-size: .8rem;
+}
+.steps {
+    padding-left: 1.5em;
+    font-size: .88rem;
+}
+[hidden] {
+    display: none !important;
+}
+@media (max-width: 400px) {
+    body {
+        padding: 12px;
+    }
+    .container {
+        padding: 20px 15px;
+    }
+    .next {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+<body>
+
+<main class="container">
+    <h1>
+        尼崎市産後ケア事業<br>
+        費用シミュレーター（大阪院）
+    </h1>
+
+    <p class="update">
+        ぶどうの木 都シティ 大阪本町<br>
+        2026年6月1日以降の予約向け料金｜2026年10月19日確認
+    </p>
+
+    <p class="help">
+        尼崎市に住民票がある方が対象です。
+        当院は宿泊型のみ、生後4か月未満のお子さまが対象です。
+    </p>
+
+    <label for="household">世帯区分</label>
+    <select id="household" onchange="calculate()">
+        <option value="tax">市民税課税世帯</option>
+        <option value="exempt">市民税非課税・生活保護世帯</option>
+    </select>
+
+    <label for="used-days">
+        今回の出産で、これまでに使った宿泊型の利用日数
+    </label>
+    <select id="used-days" onchange="calculate()">
+        <option value="0">0日（初めて）</option>
+        <option value="1">1日</option>
+        <option value="2">2日</option>
+        <option value="3">3日</option>
+        <option value="4">4日</option>
+        <option value="5">5日</option>
+        <option value="6">6日</option>
+        <option value="7">7日（上限まで利用済み）</option>
+    </select>
+
+    <p class="help">
+        他施設の利用も含めます。
+        1泊2日は2日、2泊3日は3日として、宿泊型は通算7日までです。
+        通所型・訪問型の利用日数はここには含めません。
+    </p>
+
+    <label for="nights">今回の宿泊数</label>
+    <select id="nights" onchange="calculate()">
+        <option value="1">1泊2日</option>
+        <option value="2">2泊3日</option>
+        <option value="3">3泊4日</option>
+        <option value="4">4泊5日</option>
+        <option value="5">5泊6日</option>
+        <option value="6">6泊7日</option>
+    </select>
+
+    <div class="choices">
+        <label class="check">
+            <input id="multi" type="checkbox" onchange="calculate()">
+            多胎児で利用
+        </label>
+
+        <p class="help">
+            多胎児利用分は、施設の料金表にある追加額で試算します。
+            人数などによる条件は施設へご確認ください。
+        </p>
+
+        <label class="check">
+            <input id="newyear" type="checkbox" onchange="calculate()">
+            年末年始の利用を希望（別途見積）
+        </label>
+
+        <label class="check">
+            <input id="collab" type="checkbox" onchange="calculate()">
+            コラボルームを希望（別途見積）
+        </label>
+    </div>
+
+    <section class="result" aria-live="polite" aria-atomic="true">
+        <div class="result-label">
+            基本料金の概算小計（宿泊税・特別料金は別途）
+        </div>
+
+        <div class="amount" id="total">—</div>
+        <p id="result-message"></p>
+        <div id="details"></div>
+
+        <p class="excluded">
+            宿泊税、年末年始・コラボルーム等の特別料金は含みません。
+            最終的なお支払い総額は施設へご確認ください。
+        </p>
+    </section>
+
+    <section class="next" aria-labelledby="next-heading">
+        <h2 id="next-heading">空室確認・ご相談はこちら</h2>
+
+        <p class="help" id="next-intro">
+            ご希望の内容で、空室やご利用条件をご相談いただけます。
+        </p>
+
+        <div id="copy-area" hidden>
+            <button
+                class="action copy"
+                id="copy-button"
+                type="button"
+                onclick="copyConsultation()"
+            >
+                宿泊数・概算料金をコピーする
+            </button>
+
+            <p class="help">
+                コピーした内容を、予約フォームの備考欄（ある場合）や
+                LINEのトークに貼り付けてください。
+                内容は自動では引き継がれません。
+            </p>
+
+            <p id="copy-status" role="status" aria-live="polite"></p>
+
+            <textarea
+                id="copy-text"
+                aria-label="コピー用の相談内容"
+                readonly
+                hidden
+            ></textarea>
+        </div>
+
+        <a
+            class="action"
+            href="https://reservation.ppch-j.com/reserve"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            大阪院の空室確認・予約相談
+        </a>
+
+        <p class="consult-label">
+            利用条件・申請方法や、別途料金を相談したい方へ
+        </p>
+
+        <a
+            class="action line"
+            href="https://line.me/R/ti/p/%40703tdgkc"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            LINEで相談する
+        </a>
+
+        <p class="help">
+            大阪院LINE：@703tdgkc<br>
+            友だち追加後、トークからご相談内容をお送りください。
+        </p>
+
+        <p class="help">
+            予約時は「尼崎市の産後ケア事業を利用したい」とお伝えください。
+            利用券発行前の空室相談・仮予約についても施設へお問い合わせください。
+        </p>
+
+        <h2>尼崎市の利用手順</h2>
+
+        <ol class="steps">
+            <li>出産後、尼崎市へ利用申請</li>
+            <li>市の審査後、利用券を受け取る（目安：約1週間）</li>
+            <li>利用券が届いたら施設へ利用予約</li>
+            <li>利用券・母子健康手帳等を持参してご利用</li>
+        </ol>
+
+        <p>
+            <a
+                href="https://www.city.amagasaki.hyogo.jp/kosodate-kyoiku/kosodate/syussan/1022856.html"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                尼崎市の利用条件・申請方法を確認する
+            </a>
+        </p>
+    </section>
+
+    <section class="notes">
+        <h2>料金とご利用について</h2>
+
+        <p>
+            市の利用料は課税世帯2,750円／日、
+            非課税・生活保護世帯1,000円／日です。
+            1泊2日は2日分を計算します。
+        </p>
+
+        <p>
+            施設必須追加料：
+            1泊6,000円／2泊43,000円／3泊80,000円／
+            4泊117,000円／5泊154,000円／6泊191,000円。
+        </p>
+
+        <p>
+            多胎児利用分の追加額：
+            1泊1,000円／2泊9,000円／3泊17,000円／
+            4泊25,000円／5泊33,000円／6泊41,000円。
+        </p>
+
+        <p>
+            ここでいう施設必須追加料は衣類・おむつ・消耗品等の提供に関する料金です。
+            アロマ等の施術料金とは異なります。
+            助成時間内は外出や対象外のオプションサービスを利用できません。
+        </p>
+
+        <p>
+            宿泊型の残りが1日となった場合、市は自費利用と組み合わせる特例を案内しています。
+            自費部分の料金が必要なため、このシミュレーターでは総額を計算せず、
+            個別相談をご案内します。
+        </p>
+
+        <p>
+            2026年5月31日以前の予約や、通常の自費プランは計算対象外です。
+            世帯区分・利用日数は市の利用券や母子健康手帳でご確認ください。
+        </p>
+
+        <p>
+            <a
+                href="https://www.city.amagasaki.hyogo.jp/_res/projects/default_project/_page_/001/022/856/20260819kobetuitiran.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                尼崎市の施設一覧・必須追加料金（PDF）
+            </a>
+            <br>
+            <a
+                href="https://ppch-j.com/hommachi/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ぶどうの木 都シティ 大阪本町 公式サイト
+            </a>
+        </p>
+    </section>
+</main>
+
+<script>
+// 市の利用料・上限：尼崎市ページ1022856。
+// 施設必須追加料：市の個別契約実施機関一覧（2026年8月19日）。
+// 多胎児利用分：提供された施設料金表4・5ページ。
+// 年末年始・コラボルーム・宿泊税は自動計算しません。
+
+const BASE_FEES = [
+    0, 6000, 43000, 80000, 117000, 154000, 191000
+];
+
+const MULTI_FEES = [
+    0, 1000, 9000, 17000, 25000, 33000, 41000
+];
+
+let consultationText = "";
+let calculationVersion = 0;
+
+function yen(value) {
+    return value.toLocaleString("ja-JP") + "円";
+}
+
+function calculate() {
+    calculationVersion++;
+    consultationText = "";
+
+    document.getElementById("total").textContent = "—";
+    document.getElementById("details").innerHTML = "";
+    document.getElementById("copy-area").hidden = true;
+    document.getElementById("copy-text").hidden = true;
+    document.getElementById("copy-text").value = "";
+    document.getElementById("copy-status").textContent = "";
+    document.getElementById("copy-button").disabled = false;
+
+    document.getElementById("next-intro").textContent =
+        "ご希望の内容で、空室やご利用条件をご相談いただけます。";
+
+    const household =
+        document.getElementById("household").value;
+
+    const nights = Number(
+        document.getElementById("nights").value
+    );
+
+    const usedDays = Number(
+        document.getElementById("used-days").value
+    );
+
+    const message =
+        document.getElementById("result-message");
+
+    if (
+        !["tax", "exempt"].includes(household) ||
+        !Number.isInteger(nights) ||
+        nights < 1 ||
+        nights > 6 ||
+        !Number.isInteger(usedDays) ||
+        usedDays < 0 ||
+        usedDays > 7
+    ) {
+        message.textContent =
+            "世帯区分・宿泊数・利用済み日数をご確認ください。";
+        return;
+    }
+
+    const days = nights + 1;
+    const remainingDays = 7 - usedDays;
+
+    if (days > remainingDays) {
+        if (remainingDays === 1) {
+            message.textContent =
+                "助成の残りは1日です。" +
+                "自費利用との併用について施設へご相談ください。" +
+                "自費部分を含む総額は個別見積となります。";
+        } else if (remainingDays === 0) {
+            message.textContent =
+                "宿泊型の通算7日を利用済みです。" +
+                "自費での利用について施設へご相談ください。";
+        } else {
+            message.textContent =
+                "助成の残りは" + remainingDays + "日です。" +
+                "助成内で利用する場合は最大" +
+                (remainingDays - 1) + "泊を選択してください。";
+        }
+
+        document.getElementById("next-intro").textContent =
+            "助成日数や自費利用を含むお見積りは、" +
+            "LINEまたは予約窓口でご相談ください。";
+
+        return;
+    }
+
+    const rate = household === "tax" ? 2750 : 1000;
+    const cityFee = rate * days;
+    const baseFee = BASE_FEES[nights];
+
+    const isMulti =
+        document.getElementById("multi").checked;
+
+    const multiFee =
+        isMulti ? MULTI_FEES[nights] : 0;
+
+    const isNewYear =
+        document.getElementById("newyear").checked;
+
+    const isCollab =
+        document.getElementById("collab").checked;
+
+    const subtotal =
+        cityFee + baseFee + multiFee;
+
+    document.getElementById("total").textContent =
+        subtotal.toLocaleString("ja-JP") + " 円";
+
+    message.textContent =
+        nights + "泊" + days + "日分の基本料金です。" +
+        "宿泊税・特別料金は別途です。";
+
+    document.getElementById("details").innerHTML = `
+        ・市制度の利用者負担額：
+        ${yen(cityFee)}（${yen(rate)} × ${days}日）<br>
+
+        ・施設必須追加料：${yen(baseFee)}<br>
+
+        ${
+            isMulti
+                ? "・多胎児利用分：" + yen(multiFee) + "<br>"
+                : ""
+        }
+
+        ${
+            isNewYear
+                ? "・年末年始の料金：別途見積（小計に含みません）<br>"
+                : ""
+        }
+
+        ${
+            isCollab
+                ? "・コラボルームの料金：別途見積（小計に含みません）<br>"
+                : ""
+        }
+
+        ・宿泊税：別途（小計に含みません）<br>
+
+        <small>
+            今回利用後の宿泊型の助成残日数：
+            ${remainingDays - days}日
+        </small>
+    `;
+
+    consultationText = [
+        "尼崎市の産後ケア事業での利用を相談したいです。",
+        "施設：ぶどうの木 都シティ 大阪本町",
+        "希望する宿泊数：" + nights + "泊" + days + "日",
+        "基本料金の概算小計：" + yen(subtotal) +
+            "（宿泊税・特別料金別）",
+        "今回の出産での宿泊型利用済み日数：" + usedDays + "日",
+        "多胎児での利用：" + (isMulti ? "あり" : "なし"),
+        "年末年始の利用希望：" +
+            (isNewYear ? "あり（別途見積希望）" : "なし"),
+        "コラボルーム希望：" +
+            (isCollab ? "あり（別途見積希望）" : "なし"),
+        "※利用条件と、宿泊税・特別料金を含む総額をご案内ください。"
+    ].join("\n");
+
+    document.getElementById("copy-area").hidden = false;
+}
+
+async function copyConsultation() {
+    if (!consultationText) return;
+
+    const text = consultationText;
+    const version = calculationVersion;
+
+    const button =
+        document.getElementById("copy-button");
+
+    const status =
+        document.getElementById("copy-status");
+
+    const fallback =
+        document.getElementById("copy-text");
+
+    button.disabled = true;
+
+    try {
+        if (
+            !navigator.clipboard ||
+            !window.isSecureContext
+        ) {
+            throw new Error("Clipboard unavailable");
+        }
+
+        await navigator.clipboard.writeText(text);
+
+        if (version === calculationVersion) {
+            status.textContent =
+                "コピーしました。" +
+                "予約フォームやLINEのトークに貼り付けてください。";
+        }
+    } catch {
+        if (version === calculationVersion) {
+            fallback.value = text;
+            fallback.hidden = false;
+            fallback.focus();
+            fallback.select();
+
+            status.textContent =
+                "自動コピーできませんでした。" +
+                "下の文章を選択してコピーしてください。";
+        }
+    } finally {
+        if (version === calculationVersion) {
+            button.disabled = false;
+        }
+    }
+}
+
+calculate();
+</script>
+</body>
+</html>
